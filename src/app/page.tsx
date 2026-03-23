@@ -120,8 +120,8 @@ export default function Home() {
     <main className="min-h-screen xl:h-screen xl:overflow-hidden p-4 md:p-6 flex flex-col gap-4 xl:gap-6 max-w-[2400px] mx-auto">
       <header className="flex-shrink-0 flex flex-col md:flex-row justify-between items-center gap-4 bg-primary-black text-white p-4 md:p-6 neo-card rounded-none">
         <div className="text-center md:text-left">
-           <h1 className="text-xl md:text-3xl m-0 leading-none text-primary-green tracking-widest font-mono uppercase font-bold">CertifyBulk</h1>
-           <p className="font-mono text-[10px] md:text-sm uppercase mt-1 md:mt-2">Production-Ready High Resolution Exporter</p>
+           <h1 className="text-xl md:text-3xl m-0 leading-none text-primary-green tracking-widest font-mono uppercase font-bold">CertifyBulk v1.0</h1>
+           <p className="font-mono text-[10px] md:text-sm uppercase mt-1 md:mt-2">Make certificates in bulk with ease</p>
         </div>
         <div className="flex flex-wrap justify-center md:justify-end gap-2 md:gap-4 w-full md:w-auto">
            <Link href="/guides">
