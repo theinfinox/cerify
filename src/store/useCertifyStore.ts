@@ -15,6 +15,8 @@ export interface Field {
   color: string;
   mappedColumn: string;
   autoShrink: boolean;
+  autoCenterHorizontal: boolean;
+  autoCenterVertical: boolean;
 }
 
 interface AppState {

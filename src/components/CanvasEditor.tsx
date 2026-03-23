@@ -1,20 +1,23 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { Stage, Layer, Image as KonvaImage, Text, Transformer, Line } from "react-konva";
+import { Stage, Layer, Image as KonvaImage, Text, Transformer, Line, Rect } from "react-konva";
 import useImage from "use-image";
 import { useCertifyStore, Field } from "../store/useCertifyStore";
 
 interface FieldNodeProps {
   field: Field;
   isSelected: boolean;
+  scale: number;
   onSelect: () => void;
   onChange: (newAttrs: Partial<Field>) => void;
 }
 
-const FieldNode: React.FC<FieldNodeProps> = ({ field, isSelected, onSelect, onChange }) => {
+const FieldNode: React.FC<FieldNodeProps> = ({ field, isSelected, scale, onSelect, onChange }) => {
   const textRef = useRef<any>(null);
   const trRef = useRef<any>(null);
+  const [fontLoaded, setFontLoaded] = useState(false);
+  const { templateDimensions } = useCertifyStore();
 
   useEffect(() => {
     if (isSelected && trRef.current && textRef.current) {
@@ -22,6 +25,18 @@ const FieldNode: React.FC<FieldNodeProps> = ({ field, isSelected, onSelect, onCh
       trRef.current.getLayer().batchDraw();
     }
   }, [isSelected]);
+
+  useEffect(() => {
+    if (field.fontFamily) {
+      document.fonts.load(`16px "${field.fontFamily}"`).then(() => {
+        setFontLoaded(true);
+        textRef.current?.getLayer()?.batchDraw();
+      });
+    }
+  }, [field.fontFamily]);
+
+  const effectiveX = (field.autoCenterHorizontal && templateDimensions) ? (templateDimensions.width / 2 - field.width / 2) : field.x;
+  const effectiveY = (field.autoCenterVertical && templateDimensions) ? (templateDimensions.height / 2 - field.height / 2) : field.y;
 
   let konvaAlign = field.align;
   let konvaVerticalAlign = field.verticalAlign;
@@ -34,8 +49,8 @@ const FieldNode: React.FC<FieldNodeProps> = ({ field, isSelected, onSelect, onCh
       <Text
         ref={textRef}
         text={`[${field.mappedColumn || field.id}]`}
-        x={field.x}
-        y={field.y}
+        x={effectiveX}
+        y={effectiveY}
         width={field.width}
         height={field.height}
         fontSize={field.fontSize}
@@ -43,12 +58,18 @@ const FieldNode: React.FC<FieldNodeProps> = ({ field, isSelected, onSelect, onCh
         align={konvaAlign}
         verticalAlign={konvaVerticalAlign}
         draggable
+        dragBoundFunc={(pos) => {
+           return {
+             x: field.autoCenterHorizontal ? effectiveX * scale : pos.x,
+             y: field.autoCenterVertical ? effectiveY * scale : pos.y
+           }
+        }}
         onClick={onSelect}
         onTap={onSelect}
         onDragEnd={(e) => {
           onChange({
-            x: e.target.x(),
-            y: e.target.y(),
+            x: field.autoCenterHorizontal ? effectiveX : e.target.x(),
+            y: field.autoCenterVertical ? effectiveY : e.target.y(),
           });
         }}
         onTransformEnd={(e) => {
@@ -70,6 +91,18 @@ const FieldNode: React.FC<FieldNodeProps> = ({ field, isSelected, onSelect, onCh
         fontFamily={fontFamily}
         fontStyle={fontStyle}
       />
+      {!isSelected && (
+        <Rect
+          x={effectiveX}
+          y={effectiveY}
+          width={field.width}
+          height={field.height}
+          stroke="rgba(0,0,0,0.3)"
+          strokeWidth={1.5 / scale}
+          dash={[5 / scale, 5 / scale]}
+          listening={false}
+        />
+      )}
       {isSelected && (
         <Transformer
           ref={trRef}
@@ -214,6 +247,7 @@ export const CanvasEditor: React.FC = () => {
                 <FieldNode
                   key={field.id}
                   field={field}
+                  scale={scale}
                   isSelected={field.id === selectedFieldId}
                   onSelect={() => setSelectedField(field.id)}
                   onChange={(newAttrs) => updateField(field.id, newAttrs)}

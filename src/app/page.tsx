@@ -112,37 +112,37 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen p-8 flex flex-col gap-8 max-w-[1600px] mx-auto">
-      <header className="flex justify-between items-center bg-primary-black text-white p-6 neo-card rounded-none">
-        <div>
-           <h1 className="text-3xl m-0 leading-none text-primary-green tracking-widest font-mono uppercase font-bold">CertifyBulk</h1>
-           <p className="font-mono text-sm uppercase mt-2">Production-Ready High Resolution Exporter</p>
+    <main className="min-h-screen p-4 md:p-8 flex flex-col gap-8 max-w-[2400px] mx-auto">
+      <header className="flex flex-col md:flex-row justify-between items-center gap-4 bg-primary-black text-white p-6 neo-card rounded-none">
+        <div className="text-center md:text-left">
+           <h1 className="text-2xl md:text-3xl m-0 leading-none text-primary-green tracking-widest font-mono uppercase font-bold">CertifyBulk</h1>
+           <p className="font-mono text-xs md:text-sm uppercase mt-2">Production-Ready High Resolution Exporter</p>
         </div>
-        <div className="flex gap-4">
+        <div className="flex flex-wrap justify-center md:justify-end gap-4 w-full md:w-auto">
            <button 
-              className="neo-button bg-white text-primary-black hover:bg-white border-white shadow-[6px_6px_0px_#ffffff] hover:shadow-[10px_10px_0px_#ffffff]"
+              className="neo-button bg-white text-primary-black hover:bg-white border-white shadow-[6px_6px_0px_#ffffff] hover:shadow-[10px_10px_0px_#ffffff] text-xs md:text-base px-4 py-2"
               onClick={() => handleProcess(true)}
            >
-              <Eye className="inline mr-2" /> PREVIEW BATCH
+              <Eye className="inline mr-2" size={18} /> PREVIEW
            </button>
            <button 
-              className="neo-button bg-primary-green text-primary-black hover:bg-primary-green border-white shadow-[6px_6px_0px_#ffffff] hover:shadow-[10px_10px_0px_#ffffff]"
+              className="neo-button bg-primary-green text-primary-black hover:bg-primary-green border-white shadow-[6px_6px_0px_#ffffff] hover:shadow-[10px_10px_0px_#ffffff] text-xs md:text-base px-4 py-2"
               onClick={() => handleProcess(false)}
            >
-              <DownloadCloud className="inline mr-2" /> GENERATE ZIP
+              <DownloadCloud className="inline mr-2" size={18} /> GENERATE
            </button>
         </div>
       </header>
 
-      <div className="flex gap-8 items-start h-[calc(100vh-200px)]">
+      <div className="flex flex-col xl:flex-row gap-8 items-start h-auto xl:h-[calc(100vh-200px)]">
          {/* Sidebar */}
-         <div className="flex flex-col gap-6 w-[400px] flex-shrink-0 h-full overflow-y-auto pb-8 pr-2 custom-scrollbar">
+         <div className="flex flex-col gap-6 w-full xl:w-[400px] flex-shrink-0 h-auto xl:h-full xl:overflow-y-auto pb-8 xl:pr-2 custom-scrollbar">
            <Uploader />
            <DataMapper />
          </div>
 
          {/* Editor Area */}
-         <div className="flex-grow h-full bg-gray-200 border-3 border-primary-black shadow-neo-base relative flex items-center justify-center overflow-auto custom-scrollbar">
+         <div className="w-full xl:flex-grow h-[60vh] xl:h-full bg-gray-200 border-3 border-primary-black shadow-neo-base relative flex items-center justify-center overflow-auto custom-scrollbar">
            <CanvasEditor />
          </div>
       </div>

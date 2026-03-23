@@ -44,8 +44,11 @@ self.onmessage = async (e: MessageEvent<GeneratePayload>) => {
            text = `[Static_${field.id}]`; 
         }
         
-        const x = field.x * scaleX;
-        const y = field.y * scaleY;
+        const effX = field.autoCenterHorizontal ? (templateDimensions.width / 2 - field.width / 2) : field.x;
+        const effY = field.autoCenterVertical ? (templateDimensions.height / 2 - field.height / 2) : field.y;
+
+        const x = effX * scaleX;
+        const y = effY * scaleY;
         const w = field.width * scaleX;
         const h = field.height * scaleY;
 

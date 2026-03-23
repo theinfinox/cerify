@@ -1,35 +1,39 @@
-"use client";
-
 import React from "react";
 import { useCertifyStore } from "../store/useCertifyStore";
-import { PlusCircle, Trash2, Grid } from "lucide-react";
+import { PlusCircle, Trash2, Grid, AlignCenterHorizontal, AlignCenterVertical } from "lucide-react";
+import { FontPicker } from "./FontPicker";
 
 export const DataMapper: React.FC = () => {
   const { fields, addField, updateField, removeField, csvHeaders, templateDimensions, gridLevel, setGridLevel } = useCertifyStore();
 
   const handleAddField = () => {
-    const x = templateDimensions ? templateDimensions.width / 2 - 150 : 100;
-    const y = templateDimensions ? templateDimensions.height / 2 - 25 : 100;
+    // Perfectly scaled bounds according to template!
+    const w = templateDimensions ? templateDimensions.width * 0.6 : 300;
+    const h = templateDimensions ? templateDimensions.height * 0.1 : 50;
+    const defaultFontSize = templateDimensions ? Math.max(20, Math.floor(templateDimensions.height * 0.05)) : 40;
+    
+    const x = templateDimensions ? templateDimensions.width / 2 - w / 2 : 100;
+    const y = templateDimensions ? templateDimensions.height / 2 - h / 2 : 100;
 
     addField({
       id: Math.random().toString(36).substr(2, 9),
       x,
       y,
-      width: 300,
-      height: 50,
+      width: w,
+      height: h,
       align: 'center',
       verticalAlign: 'middle',
-      fontSize: 40,
+      fontSize: defaultFontSize,
       fontFamily: 'Inter',
       isBold: true,
       isItalic: false,
       color: '#0d0d0d',
       mappedColumn: csvHeaders[0] || 'Text',
       autoShrink: false,
+      autoCenterHorizontal: false,
+      autoCenterVertical: false,
     });
   };
-
-  const fonts = ['Inter', 'Courier New', 'Roboto', 'Open Sans', 'Montserrat', 'Lato', 'Oswald', 'Raleway', 'Playfair Display'];
 
   return (
     <div className="flex flex-col gap-6 w-full max-w-sm">
@@ -80,16 +84,13 @@ export const DataMapper: React.FC = () => {
                 </select>
               </div>
 
-              <div className="flex gap-2">
+              <div className="flex gap-2 relative">
                 <div className="flex flex-col gap-1 w-2/3">
                   <label className="text-[10px] font-mono font-bold">FONT</label>
-                  <select 
-                    className="neo-input w-full text-sm h-[46px]"
-                    value={field.fontFamily || 'Inter'}
-                    onChange={(e) => updateField(field.id, { fontFamily: e.target.value })}
-                  >
-                    {fonts.map(f => <option key={f} value={f}>{f}</option>)}
-                  </select>
+                  <FontPicker 
+                    value={field.fontFamily}
+                    onChange={(val) => updateField(field.id, { fontFamily: val })}
+                  />
                 </div>
                 <div className="flex flex-col gap-1 w-1/3">
                   <label className="text-[10px] font-mono font-bold">STYLE</label>
@@ -126,6 +127,33 @@ export const DataMapper: React.FC = () => {
                     />
                  </div>
               </div>
+
+              <div className="flex flex-col gap-2 bg-gray-200 p-2 border-3 border-primary-black mt-1">
+                <label className="text-[10px] font-mono font-bold flex items-center gap-1">
+                  <AlignCenterHorizontal size={12} /> AUTO ALIGN POSITION
+                </label>
+                <div className="flex flex-col gap-1">
+                  <label className="flex items-center gap-2 text-xs font-mono font-bold cursor-pointer">
+                    <input 
+                      type="checkbox" 
+                      className="w-4 h-4 accent-primary-black cursor-pointer"
+                      checked={field.autoCenterHorizontal} 
+                      onChange={e => updateField(field.id, { autoCenterHorizontal: e.target.checked })} 
+                    />
+                    Horizontal Center
+                  </label>
+                  <label className="flex items-center gap-2 text-xs font-mono font-bold cursor-pointer">
+                    <input 
+                      type="checkbox" 
+                      className="w-4 h-4 accent-primary-black cursor-pointer"
+                      checked={field.autoCenterVertical} 
+                      onChange={e => updateField(field.id, { autoCenterVertical: e.target.checked })} 
+                    />
+                    Vertical Center
+                  </label>
+                </div>
+              </div>
+
             </div>
           ))}
 
