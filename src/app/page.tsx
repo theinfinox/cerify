@@ -11,6 +11,8 @@ import { ProgressOverlay } from "../components/ProgressOverlay";
 import { useCertifyStore } from "../store/useCertifyStore";
 import { DownloadCloud, Eye } from "lucide-react";
 
+import { SplashScreen } from "../components/SplashScreen";
+
 // Dynamically import CanvasEditor to prevent SSR issues with react-konva / canvas
 const CanvasEditor = dynamic(
   () => import("../components/CanvasEditor").then((mod) => mod.CanvasEditor),
@@ -112,6 +114,8 @@ export default function Home() {
   };
 
   return (
+    <>
+    <SplashScreen />
     <main className="min-h-screen p-4 md:p-8 flex flex-col gap-8 max-w-[2400px] mx-auto">
       <header className="flex flex-col md:flex-row justify-between items-center gap-4 bg-primary-black text-white p-6 neo-card rounded-none">
         <div className="text-center md:text-left">
@@ -163,5 +167,6 @@ export default function Home() {
          onCancel={handleCancelExport}
       />
     </main>
+    </>
   );
 }
