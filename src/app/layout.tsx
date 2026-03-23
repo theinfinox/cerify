@@ -2,8 +2,26 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "CertifyBulk - High-Res Certificate Generator",
-  description: "Production-ready high resolution exporter with Neo-Brutalist design",
+  title: "CertifyBulk | High-Res Bulk Certificate Generator",
+  description: "A lightning-fast, entirely client-side PWA for generating mass high-resolution certificates locally using dynamic CSV data mappings. Engineered with Neo-Brutalist aesthetics.",
+  keywords: "bulk certificate generator, CSV to certificates, PWA, client-side exporter, automate certificates, generate dynamic images, neo-brutalism, React canvas editor, high resolution",
+  authors: [{ name: "Govind SR", url: "https://govindsr.me" }],
+  creator: "Govind SR (@theinfinox)",
+  openGraph: {
+    title: "CertifyBulk | High-Res Bulk Generator",
+    description: "Map your CSV data directly onto High-Res templates and instantly export ZIP bundles right in your browser.",
+    siteName: "CertifyBulk PWA",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "CertifyBulk | Mass Certificate Engine",
+    description: "Generate 100s of crisp certificates entirely offline securely in your browser.",
+    creator: "@theinfinox"
+  },
+  icons: {
+    icon: "data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%2300C853%22 rx=%2220%22 stroke=%22%230d0d0d%22 stroke-width=%228%22/><text y=%2250%22 x=%2250%22 fill=%22%230d0d0d%22 font-family=%22monospace%22 font-weight=%22900%22 font-size=%2255%22 text-anchor=%22middle%22 dominant-baseline=%22central%22>CB</text></svg>",
+  },
   manifest: "/manifest.json",
   themeColor: "#0d0d0d",
 };
