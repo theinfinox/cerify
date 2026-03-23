@@ -147,8 +147,6 @@ export default function Home() {
          </div>
       </div>
 
-      <Toolbar selectedFieldId={fields.find(f => true)?.id || null /* To be managed */} onOpenSafetyModal={() => setSafetyModalOpen(true)} />
-      
       <WarningModal isOpen={safetyModalOpen} onClose={() => setSafetyModalOpen(false)} />
       
       <PreviewModal 

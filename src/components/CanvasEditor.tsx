@@ -124,7 +124,7 @@ const FieldNode: React.FC<FieldNodeProps> = ({ field, isSelected, scale, onSelec
 };
 
 export const CanvasEditor: React.FC = () => {
-  const { templateImage, fields, updateField, selectedFieldId, setSelectedField, gridLevel } = useCertifyStore();
+  const { templateImage, fields, updateField, selectedFieldId, setSelectedField, gridLevel, gridColor } = useCertifyStore();
   const [image] = useImage(templateImage || "");
 
   // Responsive stage state
@@ -185,16 +185,18 @@ export const CanvasEditor: React.FC = () => {
     const lines = [];
     const w = image.width;
     const h = image.height;
-    const stroke = 'rgba(0,0,0,0.5)';
+    
+    const stroke = gridColor === 'light' ? 'rgba(255,255,255,0.8)' : 'rgba(0,0,0,0.5)';
+    const grStroke = gridColor === 'light' ? 'rgba(0, 255, 128, 0.7)' : 'rgba(0, 200, 83, 0.4)';
     const strokeWidth = 2 / scale;
 
     if (['low', 'medium', 'high'].includes(gridLevel)) {
       lines.push(<Line key="c-v" points={[w/2, 0, w/2, h]} stroke={stroke} strokeWidth={strokeWidth} dash={[10/scale, 5/scale]} listening={false} />);
       lines.push(<Line key="c-h" points={[0, h/2, w, h/2]} stroke={stroke} strokeWidth={strokeWidth} dash={[10/scale, 5/scale]} listening={false} />);
-      lines.push(<Line key="gr-v1" points={[w*0.382, 0, w*0.382, h]} stroke="rgba(0, 200, 83, 0.4)" strokeWidth={strokeWidth} listening={false} />);
-      lines.push(<Line key="gr-v2" points={[w*0.618, 0, w*0.618, h]} stroke="rgba(0, 200, 83, 0.4)" strokeWidth={strokeWidth} listening={false} />);
-      lines.push(<Line key="gr-h1" points={[0, h*0.382, w, h*0.382]} stroke="rgba(0, 200, 83, 0.4)" strokeWidth={strokeWidth} listening={false} />);
-      lines.push(<Line key="gr-h2" points={[0, h*0.618, w, h*0.618]} stroke="rgba(0, 200, 83, 0.4)" strokeWidth={strokeWidth} listening={false} />);
+      lines.push(<Line key="gr-v1" points={[w*0.382, 0, w*0.382, h]} stroke={grStroke} strokeWidth={strokeWidth} listening={false} />);
+      lines.push(<Line key="gr-v2" points={[w*0.618, 0, w*0.618, h]} stroke={grStroke} strokeWidth={strokeWidth} listening={false} />);
+      lines.push(<Line key="gr-h1" points={[0, h*0.382, w, h*0.382]} stroke={grStroke} strokeWidth={strokeWidth} listening={false} />);
+      lines.push(<Line key="gr-h2" points={[0, h*0.618, w, h*0.618]} stroke={grStroke} strokeWidth={strokeWidth} listening={false} />);
     }
 
     if (['medium', 'high'].includes(gridLevel)) {

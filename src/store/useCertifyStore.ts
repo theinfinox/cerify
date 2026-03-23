@@ -27,6 +27,7 @@ interface AppState {
   csvHeaders: string[];
   selectedFieldId: string | null;
   gridLevel: 'off' | 'low' | 'medium' | 'high';
+  gridColor: 'dark' | 'light';
   
   // Actions
   setTemplateImage: (url: string, width: number, height: number) => void;
@@ -36,6 +37,7 @@ interface AppState {
   setCsvData: (data: Record<string, string>[], headers: string[]) => void;
   setSelectedField: (id: string | null) => void;
   setGridLevel: (level: 'off' | 'low' | 'medium' | 'high') => void;
+  setGridColor: (color: 'dark' | 'light') => void;
   resetAll: () => void;
 }
 
@@ -47,6 +49,7 @@ export const useCertifyStore = create<AppState>((set) => ({
   csvHeaders: [],
   selectedFieldId: null,
   gridLevel: 'off',
+  gridColor: 'dark',
 
   setTemplateImage: (url, width, height) => set({
     templateImage: url,
@@ -77,6 +80,10 @@ export const useCertifyStore = create<AppState>((set) => ({
   setGridLevel: (level) => set({
     gridLevel: level
   }),
+  
+  setGridColor: (color) => set({
+    gridColor: color
+  }),
 
   resetAll: () => set({
     templateImage: null,
@@ -85,6 +92,7 @@ export const useCertifyStore = create<AppState>((set) => ({
     csvData: [],
     csvHeaders: [],
     selectedFieldId: null,
-    gridLevel: 'off'
+    gridLevel: 'off',
+    gridColor: 'dark'
   })
 }));

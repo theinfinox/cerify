@@ -1,6 +1,6 @@
 import React from "react";
 import { useCertifyStore } from "../store/useCertifyStore";
-import { PlusCircle, Trash2, Grid, AlignCenterHorizontal, AlignCenterVertical } from "lucide-react";
+import { PlusCircle, Trash2, Grid, AlignCenterHorizontal, AlignCenterVertical, AlignLeft, AlignCenter, AlignRight, AlignVerticalJustifyStart, AlignVerticalJustifyCenter, AlignVerticalJustifyEnd } from "lucide-react";
 import { FontPicker } from "./FontPicker";
 
 export const DataMapper: React.FC = () => {
@@ -47,16 +47,26 @@ export const DataMapper: React.FC = () => {
           <label className="text-xs font-mono font-bold flex items-center gap-2">
             <Grid size={16} /> GRID OVERLAY
           </label>
-          <select 
-            className="neo-input w-full text-sm font-mono"
-            value={gridLevel}
-            onChange={(e) => setGridLevel(e.target.value as any)}
-          >
-            <option value="off">OFF</option>
-            <option value="low">LOW (Center + Golden Ratio)</option>
-            <option value="medium">MEDIUM (Low + Quarters)</option>
-            <option value="high">HIGH (10x10 Grid)</option>
-          </select>
+          <div className="flex gap-2">
+            <select 
+              className="neo-input w-2/3 text-sm font-mono"
+              value={gridLevel}
+              onChange={(e) => setGridLevel(e.target.value as any)}
+            >
+              <option value="off">OFF / NONE</option>
+              <option value="low">LOW (Golden Ratio)</option>
+              <option value="medium">MEDIUM (Quarters)</option>
+              <option value="high">HIGH (10x10)</option>
+            </select>
+            <select 
+              className="neo-input w-1/3 text-xs font-mono"
+              value={useCertifyStore.getState().gridColor}
+              onChange={(e) => useCertifyStore.getState().setGridColor(e.target.value as any)}
+            >
+              <option value="dark">Dark</option>
+              <option value="light">Light</option>
+            </select>
+          </div>
         </div>
 
         <div className="flex flex-col gap-4 mt-2">
@@ -126,6 +136,36 @@ export const DataMapper: React.FC = () => {
                       onChange={(e) => updateField(field.id, { fontSize: Number(e.target.value) })}
                     />
                  </div>
+              </div>
+
+              <div className="flex gap-2 w-full mt-1">
+                <div className="flex flex-col gap-1 w-1/3">
+                  <label className="text-[8px] font-mono font-bold truncate">TEXT ALIGN</label>
+                  <div className="flex h-[36px]">
+                    <button className={`flex-1 border-2 border-primary-black flex items-center justify-center ${field.align === 'left' ? 'bg-primary-green' : 'bg-white'}`} onClick={() => updateField(field.id, { align: 'left' })}><AlignLeft size={14} /></button>
+                    <button className={`flex-1 border-y-2 border-r-2 border-primary-black flex items-center justify-center ${field.align === 'center' ? 'bg-primary-green' : 'bg-white'}`} onClick={() => updateField(field.id, { align: 'center' })}><AlignCenter size={14} /></button>
+                    <button className={`flex-1 border-y-2 border-r-2 border-primary-black flex items-center justify-center ${field.align === 'right' ? 'bg-primary-green' : 'bg-white'}`} onClick={() => updateField(field.id, { align: 'right' })}><AlignRight size={14} /></button>
+                  </div>
+                </div>
+                
+                <div className="flex flex-col gap-1 w-1/3">
+                  <label className="text-[8px] font-mono font-bold truncate">VERT. ALIGN</label>
+                  <div className="flex h-[36px]">
+                    <button className={`flex-1 border-2 border-primary-black flex items-center justify-center ${field.verticalAlign === 'top' ? 'bg-primary-green' : 'bg-white'}`} onClick={() => updateField(field.id, { verticalAlign: 'top' })}><AlignVerticalJustifyStart size={14} /></button>
+                    <button className={`flex-1 border-y-2 border-r-2 border-primary-black flex items-center justify-center ${field.verticalAlign === 'middle' ? 'bg-primary-green' : 'bg-white'}`} onClick={() => updateField(field.id, { verticalAlign: 'middle' })}><AlignVerticalJustifyCenter size={14} /></button>
+                    <button className={`flex-1 border-y-2 border-r-2 border-primary-black flex items-center justify-center ${field.verticalAlign === 'bottom' ? 'bg-primary-green' : 'bg-white'}`} onClick={() => updateField(field.id, { verticalAlign: 'bottom' })}><AlignVerticalJustifyEnd size={14} /></button>
+                  </div>
+                </div>
+                
+                <div className="flex flex-col gap-1 w-1/3">
+                  <label className="text-[8px] font-mono font-bold truncate text-center text-alert-red">AUTO-SHRINK</label>
+                  <button 
+                    className={`h-[36px] border-2 border-primary-black font-bold font-mono text-[10px] transition-colors ${field.autoShrink ? 'bg-alert-red text-white' : 'bg-white text-black'}`}
+                    onClick={() => updateField(field.id, { autoShrink: !field.autoShrink })}
+                  >
+                    {field.autoShrink ? 'ON' : 'OFF'}
+                  </button>
+                </div>
               </div>
 
               <div className="flex flex-col gap-2 bg-gray-200 p-2 border-3 border-primary-black mt-1">
