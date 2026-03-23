@@ -15,6 +15,31 @@ self.onmessage = async (e: MessageEvent<GeneratePayload>) => {
   
   try {
     const bitmap = await self.createImageBitmap(imageBlob);
+    
+    // --- Load fonts dynamically for the OffscreenCanvas worker scope ---
+    const uniqueFonts = Array.from(new Set(fields.map(f => f.fontFamily).filter(Boolean)));
+    for (const font of uniqueFonts) {
+      if (!font) continue;
+      try {
+        const url = `https://fonts.googleapis.com/css2?family=${font.replace(/ /g, '+')}&display=swap`;
+        const cssRes = await fetch(url);
+        const cssText = await cssRes.text();
+        
+        // Find Latin or generic WOFF2 block by parsing all urls and selecting the bottom-most robust one
+        const urls = [...cssText.matchAll(/url\(([^)]+)\)/g)];
+        if (urls.length > 0) {
+           const fontUrlMatch = urls[urls.length - 1][1];
+           const cleanUrl = fontUrlMatch.replace(/['"]/g, '');
+           const fontFace = new FontFace(font, `url(${cleanUrl})`);
+           await fontFace.load();
+           (self as any).fonts.add(fontFace);
+        }
+      } catch (e) {
+        console.warn(`Worker failed to load font ${font}`, e);
+      }
+    }
+    // -----------------------------------------------------------------
+
     const scaleX = templateDimensions.width / stageDimensions.width;
     const scaleY = templateDimensions.height / stageDimensions.height;
 

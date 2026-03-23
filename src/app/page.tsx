@@ -11,6 +11,7 @@ import { ProgressOverlay } from "../components/ProgressOverlay";
 import { useCertifyStore } from "../store/useCertifyStore";
 import { DownloadCloud, Eye, Heart } from "lucide-react";
 
+import Link from 'next/link';
 import { SplashScreen } from "../components/SplashScreen";
 
 // Dynamically import CanvasEditor to prevent SSR issues with react-konva / canvas
@@ -123,6 +124,11 @@ export default function Home() {
            <p className="font-mono text-[10px] md:text-sm uppercase mt-1 md:mt-2">Production-Ready High Resolution Exporter</p>
         </div>
         <div className="flex flex-wrap justify-center md:justify-end gap-2 md:gap-4 w-full md:w-auto">
+           <Link href="/guides">
+             <button className="neo-button bg-transparent text-white border-white shadow-[4px_4px_0px_#ffffff] md:shadow-[6px_6px_0px_#ffffff] hover:shadow-[8px_8px_0px_#ffffff] text-xs md:text-base px-3 py-2 md:px-4 uppercase">
+                DOCS
+             </button>
+           </Link>
            <button 
               className="neo-button bg-white text-primary-black hover:bg-white border-white shadow-[4px_4px_0px_#ffffff] md:shadow-[6px_6px_0px_#ffffff] hover:shadow-[8px_8px_0px_#ffffff] text-xs md:text-base px-3 py-2 md:px-4"
               onClick={() => handleProcess(true)}

@@ -104,7 +104,7 @@ export default function RootLayout({
                             loader.style.transform = 'translateY(-100%)';
                             setTimeout(function() {
                                var container = document.getElementById('global-loader-container');
-                               if(container) container.remove();
+                               if(container) container.style.display = 'none';
                             }, 600);
                           }, 400);
                        }
