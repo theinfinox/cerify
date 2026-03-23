@@ -1,26 +1,55 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --primary-black: #0d0d0d;
+  --primary-green: #00C853;
+  --alert-red: #D32F2F;
+  --bg-color: #f8f9fa;
+  --card-bg: #ffffff;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@layer base {
+  body {
+    @apply bg-bg-color text-primary-black font-main selection:bg-primary-green selection:text-primary-black;
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  /* Typography Rules */
+  h1, h2, h3, h4 {
+    @apply font-main font-[800] tracking-[-1px];
+  }
+
+  code, pre {
+    @apply font-mono font-bold uppercase;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  /* Mechanical Neo-Brutalist Button */
+  .neo-button {
+    @apply font-mono font-bold uppercase bg-primary-black text-white px-6 py-3 rounded-[50px] border-3 border-primary-black shadow-neo-base transition-all duration-200 ease-in-out;
+  }
+  
+  .neo-button:hover {
+    @apply bg-primary-black -translate-x-[4px] -translate-y-[4px] shadow-neo-hover;
+  }
+
+  .neo-button-danger {
+    @apply neo-button bg-alert-red;
+  }
+
+  /* Neo-Brutalist Card / Canvas Container */
+  .neo-card {
+    @apply bg-card-bg border-3 border-primary-black shadow-neo-base rounded-[12px] p-6 transition-all duration-200 ease-in-out;
+  }
+
+  .neo-card:hover {
+    @apply -translate-x-[4px] -translate-y-[4px] shadow-neo-hover;
+  }
+
+  /* Retro-Terminal Input / Dropdown */
+  .neo-input {
+    @apply bg-white border-3 border-primary-black font-mono font-bold text-primary-black p-3 rounded-[0px] shadow-neo-sm focus:outline-none focus:ring-0 focus:-translate-x-[2px] focus:-translate-y-[2px] focus:shadow-neo-hover transition-all duration-200;
+  }
 }

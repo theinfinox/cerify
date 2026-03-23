@@ -1,65 +1,169 @@
-import Image from "next/image";
+"use client";
+
+import React, { useState, useRef, useEffect } from "react";
+import dynamic from "next/dynamic";
+import { Toolbar } from "../components/Toolbar";
+import { DataMapper } from "../components/DataMapper";
+import { Uploader } from "../components/Uploader";
+import { PreviewModal } from "../components/PreviewModal";
+import { WarningModal } from "../components/WarningModal";
+import { ProgressOverlay } from "../components/ProgressOverlay";
+import { useCertifyStore } from "../store/useCertifyStore";
+import { DownloadCloud, Eye } from "lucide-react";
+
+// Dynamically import CanvasEditor to prevent SSR issues with react-konva / canvas
+const CanvasEditor = dynamic(
+  () => import("../components/CanvasEditor").then((mod) => mod.CanvasEditor),
+  { ssr: false }
+);
 
 export default function Home() {
+  const { csvData, fields, templateImage, templateDimensions } = useCertifyStore();
+  const [safetyModalOpen, setSafetyModalOpen] = useState(false);
+  const [previewModalOpen, setPreviewModalOpen] = useState(false);
+  const [previewBlobs, setPreviewBlobs] = useState<Blob[]>([]);
+  
+  const [workerState, setWorkerState] = useState({
+    isExecuting: false,
+    current: 0,
+    total: 0,
+    statusText: ""
+  });
+  
+  const workerRef = useRef<Worker | null>(null);
+
+  useEffect(() => {
+    // We clean up worker on unmount
+    return () => {
+      workerRef.current?.terminate();
+    };
+  }, []);
+
+  const handleProcess = async (isPreview: boolean) => {
+    if (!templateImage || !templateDimensions) {
+      alert("Please upload a template image first.");
+      return;
+    }
+    
+    if (csvData.length === 0 && !isPreview) {
+      alert("Please upload CSV data for generating certificates.");
+      return;
+    }
+
+    const dataToProcess = csvData.length > 0 ? csvData : [{}]; // Dummy data for preview if no CSV
+
+    setWorkerState({
+      isExecuting: true,
+      current: 0,
+      total: isPreview ? Math.min(5, dataToProcess.length) : dataToProcess.length,
+      statusText: isPreview ? "GENERATING PREVIEWS..." : "STARTING ZIP GENERATION..."
+    });
+
+    const config = {
+      imageBlob: await fetch(templateImage).then(r => r.blob()),
+      fields: fields,
+      data: dataToProcess,
+      templateDimensions,
+      isPreview
+    };
+
+    workerRef.current = new Worker(new URL('../workers/exportWorker', import.meta.url), { type: 'module' });
+    
+    workerRef.current.onmessage = (e) => {
+      const { type, payload } = e.data;
+      if (type === 'PROGRESS') {
+        setWorkerState(prev => ({ ...prev, current: payload.current, total: payload.total }));
+      } else if (type === 'PROGRESS_ZIP') {
+        setWorkerState(prev => ({ ...prev, statusText: payload.status }));
+      } else if (type === 'PREVIEW_COMPLETE') {
+        setWorkerState({ isExecuting: false, current: 0, total: 0, statusText: "DONE" });
+        setPreviewBlobs(payload.blobs);
+        setPreviewModalOpen(true);
+        workerRef.current?.terminate();
+      } else if (type === 'COMPLETE') {
+        setWorkerState({ isExecuting: false, current: 0, total: 0, statusText: "DONE" });
+        
+        const blobUrl = URL.createObjectURL(payload.blob);
+        const a = document.createElement("a");
+        a.href = blobUrl;
+        a.download = "certificates.zip";
+        a.click();
+        
+        setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+        workerRef.current?.terminate();
+      } else if (type === 'ERROR') {
+         alert("Generator Error: " + payload.error);
+         setWorkerState({ isExecuting: false, current: 0, total: 0, statusText: "" });
+         workerRef.current?.terminate();
+      }
+    };
+
+    const absoluteDimensions = { width: templateDimensions.width, height: templateDimensions.height };
+
+    workerRef.current.postMessage({
+      ...config,
+      stageDimensions: absoluteDimensions
+    });
+  };
+
+  const handleCancelExport = () => {
+    workerRef.current?.terminate();
+    setWorkerState({ isExecuting: false, current: 0, total: 0, statusText: "CANCELLED" });
+  };
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <main className="min-h-screen p-8 flex flex-col gap-8 max-w-[1600px] mx-auto">
+      <header className="flex justify-between items-center bg-primary-black text-white p-6 neo-card rounded-none">
+        <div>
+           <h1 className="text-3xl m-0 leading-none text-primary-green tracking-widest font-mono uppercase font-bold">CertifyBulk</h1>
+           <p className="font-mono text-sm uppercase mt-2">Production-Ready High Resolution Exporter</p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+        <div className="flex gap-4">
+           <button 
+              className="neo-button bg-white text-primary-black hover:bg-white border-white shadow-[6px_6px_0px_#ffffff] hover:shadow-[10px_10px_0px_#ffffff]"
+              onClick={() => handleProcess(true)}
+           >
+              <Eye className="inline mr-2" /> PREVIEW BATCH
+           </button>
+           <button 
+              className="neo-button bg-primary-green text-primary-black hover:bg-primary-green border-white shadow-[6px_6px_0px_#ffffff] hover:shadow-[10px_10px_0px_#ffffff]"
+              onClick={() => handleProcess(false)}
+           >
+              <DownloadCloud className="inline mr-2" /> GENERATE ZIP
+           </button>
         </div>
-      </main>
-    </div>
+      </header>
+
+      <div className="flex gap-8 items-start h-[calc(100vh-200px)]">
+         {/* Sidebar */}
+         <div className="flex flex-col gap-6 w-[400px] flex-shrink-0 h-full overflow-y-auto pb-8 pr-2 custom-scrollbar">
+           <Uploader />
+           <DataMapper />
+         </div>
+
+         {/* Editor Area */}
+         <div className="flex-grow h-full bg-gray-200 border-3 border-primary-black shadow-neo-base relative flex items-center justify-center overflow-auto custom-scrollbar">
+           <CanvasEditor />
+         </div>
+      </div>
+
+      <Toolbar selectedFieldId={fields.find(f => true)?.id || null /* To be managed */} onOpenSafetyModal={() => setSafetyModalOpen(true)} />
+      
+      <WarningModal isOpen={safetyModalOpen} onClose={() => setSafetyModalOpen(false)} />
+      
+      <PreviewModal 
+        isOpen={previewModalOpen}
+        onClose={() => setPreviewModalOpen(false)}
+        blobs={previewBlobs}
+      />
+      
+      <ProgressOverlay 
+         isOpen={workerState.isExecuting} 
+         current={workerState.current}
+         total={workerState.total}
+         statusText={workerState.statusText}
+         onCancel={handleCancelExport}
+      />
+    </main>
   );
 }

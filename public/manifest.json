@@ -1,0 +1,16 @@
+{
+  "name": "CertifyBulk",
+  "short_name": "CertifyBulk",
+  "description": "High-resolution bulk certificate generation",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8f9fa",
+  "theme_color": "#0d0d0d",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "256x256",
+      "type": "image/x-icon"
+    }
+  ]
+}
