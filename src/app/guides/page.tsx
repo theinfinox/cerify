@@ -17,6 +17,25 @@ export default function GuidesPage() {
 
       <main className="max-w-4xl mx-auto space-y-12 p-6 md:p-12 pb-24">
          
+         {/* Demo Video Section */}
+         <section className="neo-card bg-white p-6 md:p-10 border-4 border-primary-black">
+            <h2 className="text-2xl md:text-3xl font-black mb-6 uppercase tracking-tighter shadow-[2px_2px_0_#0d0d0d] bg-primary-green inline-block px-4 py-2 border-2 border-primary-black">Video Walkthrough</h2>
+            <div className="text-base md:text-lg leading-relaxed space-y-4">
+               <p>
+                  Watch this quick video tutorial to easily understand how to map your CSV variables and aggressively generate thousands of heavy certificates locally in seconds.
+               </p>
+               <div className="w-full aspect-video border-4 border-primary-black shadow-[6px_6px_0_#0d0d0d] bg-primary-black relative mt-6">
+                 <iframe 
+                   className="absolute top-0 left-0 w-full h-full"
+                   src="https://www.youtube.com/embed/U1GBDmYsXI4" 
+                   title="CertifyBulk Demo Tutorial" 
+                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                   allowFullScreen
+                 ></iframe>
+               </div>
+            </div>
+         </section>
+
          {/* Step 1 */}
          <section className="neo-card bg-white p-6 md:p-10 border-4 border-primary-black">
             <h2 className="text-2xl md:text-3xl font-black mb-6 uppercase tracking-tighter shadow-[2px_2px_0_#0d0d0d] bg-primary-green inline-block px-4 py-2 border-2 border-primary-black">1. Prepare Your CSV Data</h2>
