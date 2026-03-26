@@ -10,6 +10,12 @@
 
 ---
 
+## Live Demo
+
+
+
+🌐 [certify.govindsr.me](https://certify.govindsr.me/)
+
 ## Overview
 
 **Cerify** empowers you to generate hundreds of crisp, high-resolution certificates entirely in your browser—securely, offline, and instantly.
@@ -141,11 +147,7 @@ Built with bold, geometric aesthetics:
 
 **Requirements**: Web Workers, OffscreenCanvas, Blob API, File API
 
----
 
-## Live Demo
-
-🌐 [certify.govindsr.me](https://certify.govindsr.me/)
 
 ---
 
