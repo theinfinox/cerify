@@ -3,6 +3,8 @@
 
 > Lightning-fast, entirely client-side PWA for generating mass high-resolution certificates locally using dynamic CSV data mappings.
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/3627003f-2a89-442d-8f3b-d3b54e71bc73/deploy-status)](https://app.netlify.com/projects/certifybulk/deploys)
+<br><br>
 ![Neo-Brutalist Design](https://img.shields.io/badge/aesthetic-neo--brutalist-000000?style=flat-square)
 ![TypeScript](https://img.shields.io/badge/language-typescript-3178c6?style=flat-square)
 ![Next.js 16](https://img.shields.io/badge/framework-next.js_16-000000?style=flat-square)
